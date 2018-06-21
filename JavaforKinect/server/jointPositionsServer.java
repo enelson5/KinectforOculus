@@ -94,8 +94,7 @@ public class jointPositionsServer extends J4KSDK{
 				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
 				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
-				
-				out.println(testJoint);
+
 				
 			try {
 				Thread.sleep(1000);
