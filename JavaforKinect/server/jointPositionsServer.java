@@ -74,6 +74,7 @@ public class jointPositionsServer extends J4KSDK{
 		
 		System.out.println("Start");
 	
+		
 	
 		jointPositionsServer kinect=new jointPositionsServer();
 	
