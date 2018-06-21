@@ -12,8 +12,13 @@ import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
 import j4kJointPositions.HandOpenClose;
 import j4kJointPositions.JointPositions;
+import java.io.FileWriter;
+import java.io.IOException;
+ 
 
 public class jointPositionsServer extends J4KSDK{
+	
+	private static String fileName = "C:/Users/brian/Documents/json.txt";
 	
 	int counter = 0;
 	int i = 0;
@@ -85,8 +90,8 @@ public class jointPositionsServer extends J4KSDK{
 			
 			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
 			while(!clientsocket.isClosed()) {
-				
-				out.println("{");
+				String json = "{\n";
+				/*out.println("{");
 				out.println("\"Left Wrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\"");
 				out.println("\"Left Elbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\"");
 				out.println("\"Left Shoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\"");
@@ -94,10 +99,18 @@ public class jointPositionsServer extends J4KSDK{
 				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
 				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
-
+				*/
+				json += "\"LeftWrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\",\n";
+				json += "\"LeftElbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\",\n";
+				json += "\"LeftShoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\",\n";
+				json += "\"RightWrist\": \"[" + dampenedJointsX[5] + "," + dampenedJointsY[5] + "," + dampenedJointsZ[5] + "]\",\n";
+				json += "\"RightElbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\",\n";
+				json += "\"RightShoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\",\n";
+				json += "}";
+				SaveJSON(json);
 				
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(26);
 			} 
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -169,11 +182,22 @@ public class jointPositionsServer extends J4KSDK{
 		if(c == 6)
 			c = 0;
 		 
-	dampenedJointsX[c] = (float) ((0.2*jointsX[c]) + (0.8*jointPositionX));
-	dampenedJointsY[c] = (float) ((0.2*jointsY[c]) + (0.8*jointPositionY));
-	dampenedJointsZ[c] = (float) ((0.2*jointsZ[c]) + (0.8*jointPositionZ));
+	dampenedJointsX[c] = (float) ((0.8*jointsX[c]) + (0.2*jointPositionX));
+	dampenedJointsY[c] = (float) ((0.8*jointsY[c]) + (0.2*jointPositionY));
+	dampenedJointsZ[c] = (float) ((0.8*jointsZ[c]) + (0.2*jointPositionZ));
 
 
+	}
+	public static void SaveJSON(String json) throws IOException
+	{
+		
+ 
+		// try-with-resources statement based on post comment below :)
+		try (FileWriter file = new FileWriter(fileName)) {
+			file.write(json);
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + json);
+		}
 	}
 
 }
