@@ -55,6 +55,7 @@ public class jointPositionsServer extends J4KSDK{
 	static float dampenedRightShoulderX;
 	static float dampenedRightShoulderY;
 	static float dampenedRightShoulderZ;
+	static float testJoint;
 	static float[] jointsX = {prevLeftShoulderX, prevLeftElbowX, prevLeftWristX, prevRightShoulderX, prevRightElbowX, prevRightWristX};
 	static float[] jointsY = {prevLeftShoulderY, prevLeftElbowY, prevLeftWristY, prevRightShoulderY, prevRightElbowY, prevRightWristY};
 	static float[] jointsZ = {prevLeftShoulderZ, prevLeftElbowZ, prevLeftWristZ, prevRightShoulderZ, prevRightElbowZ, prevRightWristZ};
@@ -67,10 +68,10 @@ public class jointPositionsServer extends J4KSDK{
 	public static void main(String[] args) {
 		
 		System.out.println("Start");
-
-
+	
+	
 		jointPositionsServer kinect=new jointPositionsServer();
-
+	
 		kinect.start(J4KSDK.SKELETON);
 		
 		
@@ -86,13 +87,15 @@ public class jointPositionsServer extends J4KSDK{
 			while(!clientsocket.isClosed()) {
 				
 				out.println("{");
-				out.println("\"Left Wrist\": \"[" + dampenedLeftWristX + "," + dampenedLeftWristY + "," + dampenedLeftWristZ + "]\"");
-				out.println("\"Left Elbow\": \"[" + dampenedLeftElbowX + "," + dampenedLeftElbowY + "," + dampenedLeftElbowZ + "]\"");
-				out.println("\"Left Shoulder\": \"[" + dampenedLeftShoulderX + "," + dampenedLeftShoulderY + "," + dampenedLeftShoulderZ + "]\"");
-				out.println("\"Right Wrist\": \"[" + dampenedRightWristX + "," + dampenedRightWristY + "," + dampenedRightWristZ + "]\"");
-				out.println("\"Right Elbow\": \"[" + dampenedRightElbowX + "," + dampenedRightElbowY + "," + dampenedRightElbowZ + "]\"");
-				out.println("\"Right Shoulder\": \"[" + dampenedRightShoulderX + "," + dampenedRightShoulderY + "," + dampenedRightShoulderZ + "]\"");
+				out.println("\"Left Wrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\"");
+				out.println("\"Left Elbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\"");
+				out.println("\"Left Shoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\"");
+				out.println("\"Right Wrist\": \"[" + dampenedJointsX[5] + "," + dampenedJointsY[5] + "," + dampenedJointsZ[5] + "]\"");
+				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
+				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
+				
+				out.println(testJoint);
 				
 			try {
 				Thread.sleep(1000);
@@ -170,6 +173,7 @@ public class jointPositionsServer extends J4KSDK{
 	dampenedJointsX[c] = (float) ((0.2*jointsX[c]) + (0.8*jointPositionX));
 	dampenedJointsY[c] = (float) ((0.2*jointsY[c]) + (0.8*jointPositionY));
 	dampenedJointsZ[c] = (float) ((0.2*jointsZ[c]) + (0.8*jointPositionZ));
+
 
 	}
 
