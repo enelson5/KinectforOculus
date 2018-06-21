@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="j4k-examples/src"/>
+	<classpathentry kind="src" path="JavaforKinect"/>
+	<classpathentry kind="lib" path="j4k-examples/j4k-examples.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/jogl-all.jar"/>
+	<classpathentry kind="lib" path="j4k-examples/lib/ufdw.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
