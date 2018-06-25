@@ -91,8 +91,7 @@ public class jointPositionsServer extends J4KSDK{
 			
 			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
 			while(!clientsocket.isClosed()) {
-				String json = "{\n";
-				/*out.println("{");
+				out.println("{");
 				out.println("\"Left Wrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\"");
 				out.println("\"Left Elbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\"");
 				out.println("\"Left Shoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\"");
@@ -100,15 +99,7 @@ public class jointPositionsServer extends J4KSDK{
 				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
 				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
-				*/
-				json += "\"LeftWrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\",\n";
-				json += "\"LeftElbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\",\n";
-				json += "\"LeftShoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\",\n";
-				json += "\"RightWrist\": \"[" + dampenedJointsX[5] + "," + dampenedJointsY[5] + "," + dampenedJointsZ[5] + "]\",\n";
-				json += "\"RightElbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\",\n";
-				json += "\"RightShoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\",\n";
-				json += "}";
-				SaveJSON(json);
+
 				
 			try {
 				Thread.sleep(26);
@@ -189,16 +180,6 @@ public class jointPositionsServer extends J4KSDK{
 
 
 	}
-	public static void SaveJSON(String json) throws IOException
-	{
-		
- 
-		// try-with-resources statement based on post comment below :)
-		try (FileWriter file = new FileWriter(fileName)) {
-			file.write(json);
-			System.out.println("Successfully Copied JSON Object to File...");
-			System.out.println("\nJSON Object: " + json);
-		}
-	}
+	
 
 }
