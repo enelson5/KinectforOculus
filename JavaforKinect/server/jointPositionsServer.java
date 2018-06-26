@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
@@ -16,10 +20,13 @@ import java.io.FileWriter;
 import java.io.IOException;
  
 
-public class jointPositionsServer extends J4KSDK{
+public class jointPositionsServer extends J4KSDK
+{
 	
-	private static String fileName = "C:/Users/brian/Documents/json.txt";
-	
+	static boolean isRunning = false;
+	static jointPositionsServer kinect;
+	static Socket clientsocket;
+	static ServerSocket serversocket;
 	int counter = 0;
 	int i = 0;
 	static String dampenedJointPosition;
@@ -73,53 +80,155 @@ public class jointPositionsServer extends J4KSDK{
 	public static void main(String[] args) {
 		
 		System.out.println("Start");
-	
-		
-	
-		jointPositionsServer kinect=new jointPositionsServer();
-	
-		kinect.start(J4KSDK.SKELETON);
-		
-		
-		try {
-			ServerSocket serversocket = new ServerSocket(1345);
-			
-			Socket clientsocket = serversocket.accept();
-			System.out.println("We got a client.");
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
-			
-			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
-			while(!clientsocket.isClosed()) {
-				out.println("{");
-				out.println("\"Left Wrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\"");
-				out.println("\"Left Elbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\"");
-				out.println("\"Left Shoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\"");
-				out.println("\"Right Wrist\": \"[" + dampenedJointsX[5] + "," + dampenedJointsY[5] + "," + dampenedJointsZ[5] + "]\"");
-				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
-				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
-				out.println("}");
-
-				
-			try {
-				Thread.sleep(26);
-			} 
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			}
-			
-		} catch (IOException e) {
+		Frame frame = new Frame();
+		kinect=new jointPositionsServer();
+		try
+		{
+			serversocket = new ServerSocket(1345);
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
+		Frame.setStatus("Ready!");
 		
-		kinect.stop();
-		
-		System.out.println("End");
 		
 	}
 
+	
+	public static void startServer() 
+	{
+		if (isRunning == true)
+		{
+    		Frame.setStatus("Already running!");
+		}
+		else
+		{
+		SwingWorker sw1 = new SwingWorker() 
+        {
+ 
+            @Override
+            protected String doInBackground() throws Exception 
+            {
+            	
+        		isRunning = true;
+        		Frame.setStatus("Server is up!");
+        		kinect.start(J4KSDK.SKELETON);
+        		
+        		while(isRunning)
+        		{
+        		try {
+        		     
+        			 
+        			 clientsocket = serversocket.accept();
+        			System.out.println("We got a client.");
+        			Frame.setStatus("Client Connected!");
+        			BufferedReader in = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
+        			
+        			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
+        			
+        					
+        			while(clientsocket.isConnected()) {
+        			    
+        				out.println("{");
+        				out.println("\"LeftWrist\": {\"x\":" + dampenedJointsX[2] + ",\"y\":" + dampenedJointsY[2] + ",\"z\":" + dampenedJointsZ[2] + "},");
+        				out.println("\"LeftElbow\": {\"x\":"  + dampenedJointsX[1] + ",\"y\":" + dampenedJointsY[1]+ ",\"z\":" + dampenedJointsZ[1] + "},");
+        				out.println("\"LeftShoulder\": {\"x\":"  + dampenedJointsX[0] + ",\"y\":" + dampenedJointsY[0] + ",\"z\":" + dampenedJointsZ[0] + "},");
+        				out.println("\"RightWrist\": {\"x\":"  + dampenedJointsX[5] + ",\"y\":" + dampenedJointsY[5] + ",\"z\":" + dampenedJointsZ[5] + "},");
+        				out.println("\"RightElbow\": {\"x\":"  + dampenedJointsX[4] + ",\"y\":" + dampenedJointsY[4] + ",\"z\":" + dampenedJointsZ[4] + "},");
+        				out.println("\"RightShoulder\": {\"x\":"  + dampenedJointsX[3] + ",\"y\":" + dampenedJointsY[3] + ",\"z\":" + dampenedJointsZ[3] + "}");
+        				//out.println("\"LeftWrist\": {\"x\":20,\"y\":30,\"z\":40}");
+        				out.println("}");
+
+        				
+        			try {
+        				Thread.sleep(26);
+        			} 
+        			catch (InterruptedException e) {
+        				e.printStackTrace();
+        			}
+        			
+        			}
+        			
+        			//isRunning = false;
+        				
+        		} catch (IOException e) {
+        			e.printStackTrace();
+        		}
+        		}
+                
+                return "";
+            }
+ 
+            @Override
+            protected void process(List chunks)
+            {
+                // define what the event dispatch thread 
+                // will do with the intermediate results received
+                // while the thread is executing
+                int val = (int) chunks.get(chunks.size()-1);
+                 
+                System.out.println(String.valueOf(val));
+            }
+ 
+            @Override
+            protected void done() 
+            {
+                // this method is called when the background 
+                // thread finishes execution
+                try
+                {
+                    String statusMsg = (String) get();
+                    System.out.println("Inside done function");
+                     System.out.println(statusMsg);
+                     
+                } 
+                catch (InterruptedException e) 
+                {
+                    e.printStackTrace();
+                } 
+                catch (ExecutionException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+		
+        sw1.execute();
+		}
+	}
+	
+	public static void stopServer()
+	{
+		if (isRunning == true)
+		{
+			isRunning = false;
+			try {
+				if (serversocket != null && clientsocket != null)
+				{
+					System.out.println("TRUE");
+					if(clientsocket.isConnected())
+					{
+						clientsocket.close();
+					}
+					//serversocket.close();
+				}
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			kinect.stop();
+			Frame.setStatus("Server stopped!");
+		}
+		else
+		{
+			Frame.setStatus("Not running!");
+		}
+		
+		
+	}
 	@Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
 		
