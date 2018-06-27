@@ -37,7 +37,7 @@ public class Frame {
 				jointPositionsServer.startServer();
 			}
 			
-			
+		
 		});
 		stop = new JButton("Stop Server");
 		stop.addActionListener(new ActionListener()
