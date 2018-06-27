@@ -127,7 +127,7 @@ public class jointPositionsServer extends J4KSDK
         			
         			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
         			
-        					
+        			
         			while(clientsocket.isConnected()) {
         			    
         				out.println("{");
