@@ -16,7 +16,6 @@ public class Frame {
 	static JLabel status;
 	public Frame()
 	{
-
 		f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setTitle("Server");
