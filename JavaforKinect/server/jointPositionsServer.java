@@ -139,6 +139,7 @@ public class jointPositionsServer extends J4KSDK
         				out.println("\"RightShoulder\": {\"x\":"  + dampenedJointsX[3] + ",\"y\":" + dampenedJointsY[3] + ",\"z\":" + dampenedJointsZ[3] + "}");
         				//out.println("\"LeftWrist\": {\"x\":20,\"y\":30,\"z\":40}");
         				out.println("}");
+        				
         			try {
         				Thread.sleep(26);
         			} 
