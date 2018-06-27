@@ -148,7 +148,7 @@ public class jointPositionsServer extends J4KSDK
         			}
         			
         			}
-        			
+        		
         			//isRunning = false;
         				
         		} catch (IOException e) {
