@@ -283,9 +283,9 @@ public class jointPositionsServer extends J4KSDK
 		if(c == 6)
 			c = 0;
 		 
-	dampenedJointsX[c] = (float) ((0.8*jointsX[c]) + (0.2*jointPositionX));
-	dampenedJointsY[c] = (float) ((0.8*jointsY[c]) + (0.2*jointPositionY));
-	dampenedJointsZ[c] = (float) ((0.8*jointsZ[c]) + (0.2*jointPositionZ));
+	dampenedJointsX[c] = (float) ((jointsX[c] + jointPositionX)/2);
+	dampenedJointsY[c] = (float) ((jointsY[c] + jointPositionY)/2);
+	dampenedJointsZ[c] = (float) ((jointsZ[c] + jointPositionZ)/2);
 
 
 	}
