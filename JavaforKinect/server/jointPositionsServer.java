@@ -6,24 +6,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
-import j4kJointPositions.HandOpenClose;
-import j4kJointPositions.JointPositions;
 import java.io.FileWriter;
 import java.io.IOException;
  
 
-public class jointPositionsServer extends J4KSDK{
+public class JointsThreaded extends J4KSDK implements Runnable{
 	
-	private static String fileName = "C:/Users/brian/Documents/json.txt";
 	
+	Socket clientSocket;
 	int counter = 0;
 	int i = 0;
 	static String dampenedJointPosition;
 	static int c = 0;
+	static int a = 0;
 	static float prevLeftWristX;
 	static float prevLeftWristY;
 	static float prevLeftWristZ;
@@ -69,30 +66,42 @@ public class jointPositionsServer extends J4KSDK{
 	static float[] dampenedJointsZ = {dampenedLeftShoulderZ, dampenedLeftElbowZ, dampenedLeftWristZ, dampenedRightShoulderZ, dampenedRightElbowZ, dampenedRightWristZ};
 	
 	
+	public JointsThreaded(Socket _clientSocket)
+	{
+		clientSocket = _clientSocket;
+	}
+
 	
-	public static void main(String[] args) {
+	public void run()
+	{
 		
-		System.out.println("Start");
-	
-		
-	
-		jointPositionsServer kinect=new jointPositionsServer();
-	
-		kinect.start(J4KSDK.SKELETON);
-		
+		JointsThreaded kinect = this;
 		
 		try {
-			ServerSocket serversocket = new ServerSocket(1345);
+			kinect.start(J4KSDK.SKELETON);
 			
-			Socket clientsocket = serversocket.accept();
-			System.out.println("We got a client.");
+			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			
-			BufferedReader in = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
-			
-			PrintWriter out = new PrintWriter(clientsocket.getOutputStream(), true);
-			while(!clientsocket.isClosed()) {
-				String json = "{\n";
-				/*out.println("{");
+			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+			while(!clientSocket.isClosed()) {
+
+				if (MultiThreadedHandler.numOfLines >= 15)
+				{
+					
+					MultiThreadedHandler.numOfLines = 0;
+					Frame.l.setText("");
+				}
+				if (dampenedJointsX[2] != 0)
+				{
+					if(a == 0) {
+						String cur = Frame.l.getText();
+						Frame.l.setText(cur + "\nKinect Data has been recieved");
+						MultiThreadedHandler.numOfLines++;
+						a++;
+					}
+				}
+					
+				out.println("{");
 				out.println("\"Left Wrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\"");
 				out.println("\"Left Elbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\"");
 				out.println("\"Left Shoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\"");
@@ -100,18 +109,10 @@ public class jointPositionsServer extends J4KSDK{
 				out.println("\"Right Elbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\"");
 				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
-				*/
-				json += "\"LeftWrist\": \"[" + dampenedJointsX[2] + "," + dampenedJointsY[2] + "," + dampenedJointsZ[2] + "]\",\n";
-				json += "\"LeftElbow\": \"[" + dampenedJointsX[1] + "," + dampenedJointsY[1]+ "," + dampenedJointsZ[1] + "]\",\n";
-				json += "\"LeftShoulder\": \"[" + dampenedJointsX[0] + "," + dampenedJointsY[0] + "," + dampenedJointsZ[0] + "]\",\n";
-				json += "\"RightWrist\": \"[" + dampenedJointsX[5] + "," + dampenedJointsY[5] + "," + dampenedJointsZ[5] + "]\",\n";
-				json += "\"RightElbow\": \"[" + dampenedJointsX[4] + "," + dampenedJointsY[4] + "," + dampenedJointsZ[4] + "]\",\n";
-				json += "\"RightShoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\",\n";
-				json += "}";
-				SaveJSON(json);
+
 				
 			try {
-				Thread.sleep(26);
+				Thread.sleep(32);
 			} 
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -124,8 +125,6 @@ public class jointPositionsServer extends J4KSDK{
 		}
 		
 		kinect.stop();
-		
-		System.out.println("End");
 		
 	}
 
@@ -180,7 +179,7 @@ public class jointPositionsServer extends J4KSDK{
 
 	public void dampenedPosition(float jointPositionX, float jointPositionY, float jointPositionZ) {
 		c ++;
-		if(c == 6)
+		if(c == 6) 
 			c = 0;
 		 
 	dampenedJointsX[c] = (float) ((jointsX[c] + jointPositionX)/2);
@@ -189,16 +188,7 @@ public class jointPositionsServer extends J4KSDK{
 
 
 	}
-	public static void SaveJSON(String json) throws IOException
-	{
-		
- 
-		// try-with-resources statement based on post comment below :)
-		try (FileWriter file = new FileWriter(fileName)) {
-			file.write(json);
-			System.out.println("Successfully Copied JSON Object to File...");
-			System.out.println("\nJSON Object: " + json);
-		}
-	}
+
+
 
 }
