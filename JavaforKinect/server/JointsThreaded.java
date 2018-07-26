@@ -110,8 +110,6 @@ public class JointsThreaded extends J4KSDK implements Runnable{
 				out.println("\"Right Shoulder\": \"[" + dampenedJointsX[3] + "," + dampenedJointsY[3] + "," + dampenedJointsZ[3] + "]\"");
 				out.println("}");
 
-
-
 				
 			try {
 				Thread.sleep(32);
